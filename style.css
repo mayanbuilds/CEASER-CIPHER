@@ -931,11 +931,27 @@ details[open] > summary::before { transform: rotate(90deg); }
   }
 }
 
-/* ── Tighten container padding below 600px ── */
-@media (max-width: 600px) {
+/* ── Tablet: tighten cards a touch ── */
+@media (max-width: 768px) {
   .container {
-    padding: var(--s3) var(--s3) 0;
-    gap: var(--s3);
+    padding: 1.25rem 16px 0;
+    gap: 1rem;
+  }
+
+  .tool-card,
+  .info-card,
+  .test-suite-section,
+  .shift-strip {
+    padding: 20px;
+  }
+}
+
+/* ── Mobile: full treatment below 600px ── */
+@media (max-width: 600px) {
+  /* Container */
+  .container {
+    padding: 1rem 12px 0;
+    gap: 12px;
   }
 
   /* Cards */
@@ -943,10 +959,13 @@ details[open] > summary::before { transform: rotate(90deg); }
   .info-card,
   .test-suite-section,
   .shift-strip {
-    padding: var(--s3);
+    padding: var(--s3);          /* 16px */
   }
 
-  /* Full-width buttons; stack vertically with 8px gap */
+  /* Prevent any card from overflowing its container */
+  .card { max-width: 100%; }
+
+  /* Full-width stacked buttons */
   .button-group {
     flex-direction: column;
     gap: var(--s1);
@@ -954,27 +973,87 @@ details[open] > summary::before { transform: rotate(90deg); }
   .btn {
     width: 100%;
     min-height: 44px;
+    min-width: unset;             /* remove the 100px floor that fights width:100% */
   }
 
-  /* Result row stacks vertically */
-  .result-row   { flex-direction: column; }
-  .btn-sm       { width: 100%; min-height: 44px; }
+  /* Result row stacks: input on top, Copy + Swap side by side below */
+  .result-row {
+    flex-direction: column;
+  }
+  .result-row .result-input {
+    width: 100%;
+  }
+  /* Copy + Swap sit in their own row at equal widths */
+  .result-row .btn-sm {
+    flex: 1;
+    min-height: 44px;
+    min-width: unset;
+  }
+  /* Re-wrap the two sm buttons into a row */
+  .result-row {
+    flex-wrap: wrap;
+  }
+  .result-row .result-input {
+    flex: 0 0 100%;               /* full width first row */
+  }
 
   /* Test suite header stacks */
   .test-suite-header {
     flex-direction: column;
     align-items: flex-start;
   }
-  .btn-test { width: 100%; }
+  .btn-test {
+    width: 100%;
+    min-width: unset;
+  }
 
-  /* Shift strip — keep letters readable */
-  .shift-cell { font-size: 0.65rem; padding: 4px 0; }
+  /* Shift strip: smaller cells, still flex-stretch */
+  .shift-cell {
+    font-size: 0.6rem;
+    padding: 4px 0;
+    border-radius: 3px;
+  }
+
+  /* Header right: allow badge to wrap instead of overflow */
+  .site-header__badge {
+    white-space: normal;
+    text-align: center;
+  }
+
+  /* Tighten example rows so they don't overflow */
+  .example-letters {
+    font-size: 0.75rem;
+  }
+
+  /* Footer wraps cleanly */
+  .footer {
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+  .footer-sep { display: none; }
 }
 
-/* ── Extra-narrow phones ── */
+/* ── Very small phones (320px – 380px) ── */
 @media (max-width: 380px) {
-  .container { padding: var(--s2) var(--s2) 0; }
+  .container { padding: 0.75rem 10px 0; }
 
-  /* Letter-table: slightly smaller cells */
-  .lt-cell { flex: 0 0 22px; font-size: 0.6rem; }
+  .tool-card,
+  .info-card,
+  .test-suite-section,
+  .shift-strip {
+    padding: 12px;
+  }
+
+  /* Letter strip: smallest readable size */
+  .shift-cell { font-size: 0.55rem; padding: 3px 0; }
+
+  /* Letter-to-number table: shrink cells */
+  .lt-cell { flex: 0 0 20px; font-size: 0.58rem; }
+
+  /* Reduce card heading size */
+  .card-heading { font-size: 0.9rem; }
+
+  /* Reduce form label size */
+  .form-group label { font-size: 0.8rem; }
 }
