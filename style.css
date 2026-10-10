@@ -1,0 +1,870 @@
+/* ==========================================================================
+   Caesar Cipher — University of Balochistan
+   Information Security Programming, Assignment 1
+   Developed by Muhammad Ayan
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Design tokens
+   -------------------------------------------------------------------------- */
+:root {
+  /* Surface */
+  --bg:            #f1f5f9;
+  --card:          #ffffff;
+  --border:        #e2e8f0;
+  --shadow:        0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.06);
+
+  /* Text */
+  --text:          #0f172a;
+  --text-muted:    #475569;
+  --text-subtle:   #64748b;
+
+  /* Brand */
+  --primary:       #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-tint:  #dbeafe;
+  --primary-text:  #1d4ed8;
+
+  /* Semantic */
+  --success-text:   #166534;
+  --success-bg:     #f0fdf4;
+  --success-border: #86efac;
+  --error-text:     #991b1b;
+  --error-bg:       #fef2f2;
+  --error-border:   #fca5a5;
+
+  /* Input */
+  --input-border:  #94a3b8;
+  --input-focus:   var(--primary);
+
+  /* Typography */
+  --font: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+
+  /* Spacing scale */
+  --s1: 8px;
+  --s2: 12px;
+  --s3: 16px;
+  --s4: 24px;
+
+  /* Radii */
+  --r-sm: 6px;
+  --r:    8px;
+  --r-lg: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   2. Reset & base
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.9375rem;   /* 15px */
+  line-height: 1.6;
+  padding: var(--s4) var(--s4) 0;
+  min-width: 320px;
+}
+
+/* --------------------------------------------------------------------------
+   3. Container
+   -------------------------------------------------------------------------- */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+
+/* --------------------------------------------------------------------------
+   4. Card base
+   -------------------------------------------------------------------------- */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+}
+
+/* --------------------------------------------------------------------------
+   5. Header — neutral, compact
+   -------------------------------------------------------------------------- */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  padding: var(--s2) var(--s4);          /* ~56–64px tall */
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+
+/* Lock icon tile */
+.header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: var(--r);
+  overflow: hidden;       /* clips the SVG's rounded corners cleanly */
+  background: transparent;
+}
+
+.header-logo {
+  width: 44px;
+  height: 44px;
+  display: block;
+  border-radius: var(--r);
+}
+
+.header-titles h1 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.header-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.header-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.header-meta strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.header-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--primary-text);
+  background: var(--primary-tint);
+  border: 1px solid #bfdbfe;
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+
+/* --------------------------------------------------------------------------
+   6. Two-column main row
+   -------------------------------------------------------------------------- */
+.two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s4);
+  align-items: stretch;   /* equal height */
+}
+
+/* --------------------------------------------------------------------------
+   7. Card heading
+   -------------------------------------------------------------------------- */
+.card-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--s1);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: var(--s3);
+  padding-bottom: var(--s2);
+  border-bottom: 1px solid var(--border);
+}
+
+.card-heading-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+
+/* --------------------------------------------------------------------------
+   8. Cipher Tool card
+   -------------------------------------------------------------------------- */
+.tool-card {
+  padding: var(--s4);
+}
+
+.form-group {
+  margin-bottom: var(--s3);
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.key-range {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+/* Inputs */
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid var(--input-border);
+  border-radius: var(--r);
+  font-size: 0.9375rem;
+  font-family: var(--mono);
+  color: var(--text);
+  transition: border-color .15s, box-shadow .15s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+  outline: none;
+  border-color: var(--input-focus);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, .15);
+}
+
+/* Hide number spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+input[type="number"] { -moz-appearance: textfield; }
+
+input[readonly] {
+  background: #f8fafc;
+  cursor: default;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+
+.input-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 5px;
+}
+
+.field-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: var(--error-text);
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: var(--r-sm);
+  padding: 6px 10px;
+  margin-top: 6px;
+}
+
+.field-error::before { content: '⚠ '; flex-shrink: 0; }
+.field-error.hidden  { display: none; }
+
+/* Auto-uppercase toggle */
+.auto-upper-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: var(--s1);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.auto-upper-label input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+/* Buttons */
+.button-group {
+  display: flex;
+  gap: var(--s1);
+  margin-bottom: var(--s3);
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 18px;
+  font-size: 0.875rem;
+  font-family: var(--font);
+  font-weight: 600;
+  border-radius: var(--r);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: background .12s, border-color .12s, color .12s, box-shadow .12s, transform .07s;
+  white-space: nowrap;
+  min-width: 100px;
+}
+
+.btn:active { transform: translateY(1px); }
+
+.btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Solid primary — Encrypt */
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+  box-shadow: 0 2px 8px rgba(37,99,235,.28);
+}
+.btn-primary:active { background: #1e40af; }
+
+/* Outlined — Decrypt */
+.btn-outline {
+  background: transparent;
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.btn-outline:hover {
+  background: var(--primary-tint);
+}
+
+/* Ghost — Clear, Copy, Swap */
+.btn-ghost {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+.btn-ghost:hover {
+  background: var(--bg);
+  border-color: var(--input-border);
+  color: var(--text);
+}
+
+/* Small variant for Copy / Swap */
+.btn-sm {
+  padding: 9px 12px;
+  font-size: 0.8125rem;
+  min-width: auto;
+}
+
+.btn-ghost.copied {
+  color: var(--success-text);
+  border-color: var(--success-border);
+  background: var(--success-bg);
+}
+
+/* Disabled state */
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Test button */
+.btn-test {
+  background: #4338ca;
+  border-color: #4338ca;
+  color: #fff;
+  min-width: auto;
+}
+.btn-test:hover { background: #3730a3; border-color: #3730a3; }
+
+/* Result row */
+.result-row {
+  display: flex;
+  gap: var(--s1);
+  align-items: stretch;
+}
+
+.result-row .result-input { flex: 1; }
+
+/* Status area */
+.status-area {
+  font-size: 0.875rem;
+  border-radius: var(--r);
+  white-space: pre-line;
+  min-height: 0;
+}
+
+.status-area.error {
+  padding: 10px var(--s2);
+  color: var(--error-text);
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+}
+
+.status-area.success {
+  padding: 10px var(--s2);
+  color: var(--success-text);
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+}
+
+/* Round-trip check */
+.round-trip-check {
+  margin-top: var(--s1);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.round-trip-check.pass { color: var(--success-text); }
+.round-trip-check.fail { color: var(--error-text); }
+
+/* --------------------------------------------------------------------------
+   9. How It Works card
+   -------------------------------------------------------------------------- */
+.info-card {
+  padding: var(--s4);
+}
+
+.info-text {
+  font-size: 0.875rem;
+  color: var(--text);
+  line-height: 1.65;
+  margin-bottom: var(--s2);
+}
+
+/* Formulas */
+.formula-box {
+  border-left: 3px solid var(--primary);
+  background: var(--primary-tint);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: var(--s2) var(--s3);
+  margin: var(--s3) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+}
+
+.formula-line {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  flex-wrap: wrap;
+}
+
+.formula-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--primary-text);
+  min-width: 52px;
+}
+
+.formula-line code {
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+  background: rgba(255,255,255,.7);
+  padding: 2px 8px;
+  border-radius: var(--r-sm);
+}
+
+/* Worked example */
+.example-box {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: var(--s2) var(--s3);
+  margin: var(--s3) 0;
+}
+
+.example-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-muted);
+  margin-bottom: var(--s1);
+}
+
+.example-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  margin-bottom: 5px;
+}
+
+.example-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  min-width: 48px;
+  text-align: center;
+  letter-spacing: .03em;
+}
+
+.plain-tag  { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+.num-tag    { background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; }
+.shift-tag  { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+.cipher-tag { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+
+.example-letters {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.example-result {
+  margin-top: var(--s1);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.example-result strong {
+  font-family: var(--mono);
+  color: #059669;
+  font-size: 0.9rem;
+}
+
+/* Letter-to-number table */
+.letter-table-wrap { margin: var(--s3) 0; }
+
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-muted);
+  margin-bottom: var(--s1);
+}
+
+.letter-table {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.lt-row { display: flex; gap: 2px; }
+
+.lt-cell {
+  flex: 0 0 26px;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  padding: 3px 0;
+  border-radius: 3px;
+}
+
+.lt-letters .lt-cell {
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-weight: 700;
+  border: 1px solid #bfdbfe;
+}
+
+.lt-numbers .lt-cell {
+  background: #f3f4f6;
+  color: var(--text-muted);
+  font-weight: 500;
+  border: 1px solid #e5e7eb;
+}
+
+/* Implementation notes */
+.report-notes {
+  margin-top: var(--s3);
+  padding-top: var(--s3);
+  border-top: 1px solid var(--border);
+}
+
+.report-notes summary {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--text-muted);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.report-notes summary::before {
+  content: '▸';
+  font-size: 0.65rem;
+  transition: transform .15s;
+}
+
+details[open] > summary::before { transform: rotate(90deg); }
+
+.report-notes summary:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.report-notes-content {
+  margin-top: var(--s2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.note-item h3 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.note-item p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.note-item code {
+  font-family: var(--mono);
+  background: #f1f5f9;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.78rem;
+}
+
+/* --------------------------------------------------------------------------
+   10. Alphabet shift strip — FULL WIDTH, below main row
+   -------------------------------------------------------------------------- */
+.shift-strip {
+  padding: var(--s3) var(--s4);
+}
+
+.shift-strip-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: var(--s1);
+}
+
+.shift-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Each row stretches all 26 cells across the full card width */
+.shift-row {
+  display: flex;
+  gap: 4px;
+}
+
+.shift-cell {
+  flex: 1;             /* stretch to fill width equally */
+  min-width: 0;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 5px 0;
+  border-radius: 4px;
+}
+
+.shift-plain .shift-cell {
+  background: #f8fafc;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+/* Ciphertext row uses primary tint */
+.shift-cipher .shift-cell {
+  background: var(--primary-tint);
+  color: var(--primary-text);
+  border: 1px solid #bfdbfe;
+}
+
+.shift-hint {
+  font-size: 0.75rem;
+  color: var(--text-subtle);
+  margin-top: var(--s1);
+}
+
+/* --------------------------------------------------------------------------
+   11. Test suite
+   -------------------------------------------------------------------------- */
+.test-suite-section {
+  padding: var(--s4);
+}
+
+.test-suite-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-bottom: var(--s3);
+}
+
+.test-suite-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.test-summary {
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: var(--s2);
+}
+
+.test-summary.pass { color: var(--success-text); }
+.test-summary.fail { color: var(--error-text); }
+
+.table-container { overflow-x: auto; }
+
+.test-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  text-align: left;
+}
+
+.test-table th,
+.test-table td {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.test-table th {
+  background: #f8fafc;
+  color: var(--text);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.test-table td:nth-child(1) {
+  width: 36px;
+  text-align: center;
+  font-family: var(--mono);
+  color: var(--text-subtle);
+}
+
+.test-table td:nth-child(3),
+.test-table td:nth-child(4),
+.test-table td:nth-child(5),
+.test-table td:nth-child(6) {
+  font-family: var(--mono);
+  word-break: break-all;
+}
+
+.result-pass {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--success-text);
+  background: var(--success-bg);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.result-fail {
+  font-family: var(--mono);
+  font-weight: 700;
+  color: var(--error-text);
+  background: var(--error-bg);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   12. Footer
+   -------------------------------------------------------------------------- */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--s1);
+  padding: var(--s3) 0 var(--s4);
+  font-size: 0.8rem;
+  color: var(--text-subtle);
+  border-top: 1px solid var(--border);
+}
+
+.footer-name { font-weight: 600; color: var(--text-muted); }
+.footer-sep  { color: var(--border); }
+
+/* --------------------------------------------------------------------------
+   13. Responsive
+   -------------------------------------------------------------------------- */
+
+/* ≤ 900px — collapse to single column, tool first (it's first in DOM) */
+@media (max-width: 900px) {
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ≤ 640px — tighter spacing */
+@media (max-width: 640px) {
+  body { padding: var(--s3) var(--s2) 0; }
+
+  .container { gap: var(--s3); }
+
+  .header {
+    padding: var(--s2) var(--s3);
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-right { align-items: flex-start; }
+
+  .tool-card,
+  .info-card,
+  .test-suite-section,
+  .shift-strip { padding: var(--s3); }
+
+  .button-group { flex-direction: column; }
+  .btn          { width: 100%; }
+
+  .result-row   { flex-direction: column; }
+  .btn-sm       { width: 100%; }
+
+  .test-suite-header { flex-direction: column; align-items: flex-start; }
+
+  /* Alphabet strip — fixed min size so letters don't vanish */
+  .shift-cell { font-size: 0.65rem; padding: 4px 0; }
+}
+
+/* ≤ 375px — prevent letter-table overflow */
+@media (max-width: 375px) {
+  .lt-cell { flex: 0 0 22px; font-size: 0.6rem; }
+}

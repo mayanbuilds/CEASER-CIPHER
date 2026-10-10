@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caesar Cipher &mdash; Assignment 1 | University of Balochistan</title>
+  <meta name="description" content="Caesar Cipher tool — Information Security Programming Assignment 1, University of Balochistan. Developed by Muhammad Ayan.">
+  <!-- Favicon — shows in browser tab -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+      <div class="header-left">
+        <div class="header-icon" aria-hidden="true">
+          <img src="/favicon.svg" alt="" width="28" height="28" class="header-logo">
+        </div>
+        <div class="header-titles">
+          <h1>Caesar Cipher</h1>
+          <p class="header-sub">Classic substitution cipher &mdash; modular arithmetic</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <p class="header-meta">University of Balochistan</p>
+        <p class="header-meta">Developed by <strong>Muhammad Ayan</strong></p>
+        <span class="header-badge">Assignment 1 &mdash; Information Security</span>
+      </div>
+    </header>
+
+    <!-- ===== MAIN ROW: Cipher Tool + How It Works ===== -->
+    <div class="two-col">
+
+      <!-- LEFT: Cipher Tool -->
+      <main class="card tool-card" aria-labelledby="tool-heading">
+        <h2 id="tool-heading" class="card-heading">
+          <span class="card-heading-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+              <path fill-rule="evenodd" d="M14.5 1A4.5 4.5 0 0 0 10 5.5V9H3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-1.5V5.5a3 3 0 1 1 6 0v2.75a.75.75 0 0 0 1.5 0V5.5A4.5 4.5 0 0 0 14.5 1Z" clip-rule="evenodd"/>
+            </svg>
+          </span>
+          Cipher Tool
+        </h2>
+
+        <!-- Text input -->
+        <div class="form-group">
+          <label for="text-input">Plaintext / Ciphertext</label>
+          <input type="text" id="text-input" name="text-input"
+                 placeholder="e.g. ATTACKATDAWN"
+                 autocomplete="off" spellcheck="false"
+                 aria-describedby="text-hint text-error">
+          <p class="input-hint" id="text-hint">Uppercase A–Z only — no spaces, digits, or punctuation.</p>
+          <p class="field-error hidden" id="text-error" role="alert" aria-live="polite"></p>
+          <label class="auto-upper-label">
+            <input type="checkbox" id="auto-upper-toggle">
+            Auto-uppercase my input
+          </label>
+        </div>
+
+        <!-- Key input -->
+        <div class="form-group">
+          <label for="key-input">Shift key <em>k</em> <span class="key-range">(0 – 25)</span></label>
+          <input type="number" id="key-input" name="key-input"
+                 min="0" max="25" step="1" value="3"
+                 autocomplete="off"
+                 aria-describedby="key-error">
+          <p class="field-error hidden" id="key-error" role="alert" aria-live="polite"></p>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="button-group">
+          <button type="button" id="encrypt-btn" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14" height="14" aria-hidden="true"><path fill-rule="evenodd" d="M8 1a3.5 3.5 0 0 0-3.5 3.5V7A1.5 1.5 0 0 0 3 8.5v5A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 11.5 7V4.5A3.5 3.5 0 0 0 8 1Zm2 6V4.5a2 2 0 1 0-4 0V7h4Z" clip-rule="evenodd"/></svg>
+            Encrypt
+          </button>
+          <button type="button" id="decrypt-btn" class="btn btn-outline">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="14" height="14" aria-hidden="true"><path d="M11.5 1A3.5 3.5 0 0 0 8 4.5V7H2.5A1.5 1.5 0 0 0 1 8.5v5A1.5 1.5 0 0 0 2.5 15h7A1.5 1.5 0 0 0 11 13.5v-5A1.5 1.5 0 0 0 9.5 7H9V4.5a2 2 0 0 1 3.978-.356.75.75 0 0 0 1.487-.218A3.5 3.5 0 0 0 11.5 1Z"/></svg>
+            Decrypt
+          </button>
+          <button type="button" id="clear-btn" class="btn btn-ghost">Clear</button>
+        </div>
+
+        <!-- Result output -->
+        <div class="form-group">
+          <label for="result-output">Result</label>
+          <div class="result-row">
+            <input type="text" id="result-output" readonly
+                   placeholder="Result will appear here"
+                   aria-label="Cipher result (read-only)"
+                   class="result-input">
+            <button type="button" id="copy-btn" class="btn btn-ghost btn-sm"
+                    aria-label="Copy result to clipboard" disabled>Copy</button>
+            <button type="button" id="swap-btn" class="btn btn-ghost btn-sm"
+                    aria-label="Move result back to input" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13" height="13" aria-hidden="true"><path fill-rule="evenodd" d="M13.854 2.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L12.293 3H6.5a4.5 4.5 0 0 0 0 9H8a.5.5 0 0 1 0 1H6.5a5.5 5.5 0 1 1 0-11h5.793L9.146 1.354a.5.5 0 1 1 .708-.708l3 3Z" clip-rule="evenodd"/></svg>
+              Swap
+            </button>
+          </div>
+        </div>
+
+        <!-- Status / feedback -->
+        <div id="status-area" role="alert" class="status-area"></div>
+        <div id="round-trip-check" class="round-trip-check"></div>
+      </main>
+
+      <!-- RIGHT: How it works -->
+      <section class="card info-card" aria-labelledby="how-heading">
+        <h2 id="how-heading" class="card-heading">How it works</h2>
+
+        <p class="info-text">
+          The <strong>Caesar cipher</strong> is one of the oldest known encryption techniques, named after Julius Caesar who used it to protect military messages by shifting each letter a fixed number of positions down the alphabet.
+        </p>
+        <p class="info-text">
+          Each letter is mapped to a number (A&nbsp;=&nbsp;0 … Z&nbsp;=&nbsp;25). A shift key <em>k</em> moves every letter forward (encrypt) or backward (decrypt), wrapping around from Z to A via modular arithmetic modulo 26.
+        </p>
+
+        <!-- Formulas -->
+        <div class="formula-box">
+          <div class="formula-line">
+            <span class="formula-label">Encrypt</span>
+            <code>C[i] = (P[i] + k) mod 26</code>
+          </div>
+          <div class="formula-line">
+            <span class="formula-label">Decrypt</span>
+            <code>P[i] = (C[i] &minus; k + 26) mod 26</code>
+          </div>
+        </div>
+
+        <!-- Worked example -->
+        <div class="example-box">
+          <p class="example-title">Worked example — k = 3</p>
+          <div class="example-row">
+            <span class="example-tag plain-tag">Plain</span>
+            <span class="example-letters">A &nbsp; T &nbsp; T &nbsp; A &nbsp; C &nbsp; K</span>
+          </div>
+          <div class="example-row">
+            <span class="example-tag num-tag">Index</span>
+            <span class="example-letters">0 &nbsp; 19 &nbsp; 19 &nbsp; 0 &nbsp; 2 &nbsp; 10</span>
+          </div>
+          <div class="example-row">
+            <span class="example-tag shift-tag">+3</span>
+            <span class="example-letters">3 &nbsp; 22 &nbsp; 22 &nbsp; 3 &nbsp; 5 &nbsp; 13</span>
+          </div>
+          <div class="example-row">
+            <span class="example-tag cipher-tag">Cipher</span>
+            <span class="example-letters">D &nbsp; W &nbsp; W &nbsp; D &nbsp; F &nbsp; N</span>
+          </div>
+          <p class="example-result">ATTACK &rarr; <strong>DWWDFN</strong></p>
+        </div>
+
+        <!-- Letter-to-number table -->
+        <div class="letter-table-wrap">
+          <p class="section-label">Letter &rarr; Number mapping</p>
+          <div class="letter-table" aria-label="Letter to number mapping A through Z">
+            <div class="lt-row lt-letters" id="lt-letters"></div>
+            <div class="lt-row lt-numbers" id="lt-numbers"></div>
+          </div>
+        </div>
+
+        <!-- Implementation notes -->
+        <details class="report-notes">
+          <summary>Implementation notes</summary>
+          <div class="report-notes-content">
+            <div class="note-item">
+              <h3>1. Validation strategy</h3>
+              <p>Invalid input is <strong>rejected</strong> with a clear error. It is never silently corrected — no trimming or auto-uppercasing unless the user enables the toggle.</p>
+            </div>
+            <div class="note-item">
+              <h3>2. Why <code>+ 26</code> in decryption</h3>
+              <p>JavaScript's <code>%</code> can return a negative remainder. <code>(0 &minus; 3) % 26 = &minus;3</code>; adding 26 gives <code>23 = 'X'</code>, which is correct.</p>
+            </div>
+            <div class="note-item">
+              <h3>3. Edge cases k = 0 and k = 25</h3>
+              <p>k = 0 leaves text unchanged. k = 25 shifts back by 1 since 25 &equiv; &minus;1 (mod 26). Both are covered by the test suite.</p>
+            </div>
+          </div>
+        </details>
+      </section>
+
+    </div><!-- /.two-col -->
+
+    <!-- ===== ALPHABET SHIFT STRIP (below main row) ===== -->
+    <div class="card shift-strip" aria-label="Live alphabet shift visualiser">
+      <p class="shift-strip-label">Alphabet shift &mdash; key = <span id="strip-key-display">3</span></p>
+      <div class="shift-rows" aria-hidden="true">
+        <div class="shift-row shift-plain"  id="strip-plain"></div>
+        <div class="shift-row shift-cipher" id="strip-cipher"></div>
+      </div>
+      <p class="shift-hint">Top row: plaintext &nbsp;&middot;&nbsp; Bottom row: ciphertext &nbsp;&middot;&nbsp; Updates as you type the key</p>
+    </div>
+
+    <!-- ===== TEST SUITE ===== -->
+    <section class="card test-suite-section" aria-labelledby="tests-heading">
+      <div class="test-suite-header">
+        <h2 id="tests-heading">Built-in Test Suite</h2>
+        <button type="button" id="run-tests-btn" class="btn btn-test">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" width="13" height="13" aria-hidden="true"><path fill-rule="evenodd" d="M4.5 2A2.5 2.5 0 0 0 2 4.5v7A2.5 2.5 0 0 0 4.5 14h7a2.5 2.5 0 0 0 2.5-2.5v-7A2.5 2.5 0 0 0 11.5 2h-7Zm4.28 4.97a.75.75 0 1 0-1.06 1.06L9.44 10l-1.72 1.97a.75.75 0 1 0 1.06 1.06L11.5 10 8.78 6.97ZM6.22 6.97 3.5 10l2.72 3.03a.75.75 0 1 0 1.06-1.06L5.56 10l1.72-1.97a.75.75 0 0 0-1.06-1.06Z" clip-rule="evenodd"/></svg>
+          Run Test Suite
+        </button>
+      </div>
+      <div id="test-summary" class="test-summary" aria-live="polite"></div>
+      <div class="table-container">
+        <table id="test-table" class="test-table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Test</th>
+              <th scope="col">Input</th>
+              <th scope="col">Key</th>
+              <th scope="col">Expected</th>
+              <th scope="col">Actual</th>
+              <th scope="col">Result</th>
+            </tr>
+          </thead>
+          <tbody id="test-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+      <span class="footer-name">Muhammad Ayan</span>
+      <span class="footer-sep" aria-hidden="true">&bull;</span>
+      <span>University of Balochistan</span>
+      <span class="footer-sep" aria-hidden="true">&bull;</span>
+      <span>Information Security Programming &mdash; Assignment 1</span>
+    </footer>
+
+  </div><!-- /.container -->
+  <script src="script.js"></script>
+</body>
+</html>

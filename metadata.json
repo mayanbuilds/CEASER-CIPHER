@@ -1,0 +1,6 @@
+{
+  "name": "Caesar Cipher - Assignment 1",
+  "description": "Information Security Programming Assignment 1: Caesar Cipher with strict input validation, modular arithmetic, round-trip verification, and built-in test suite.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
