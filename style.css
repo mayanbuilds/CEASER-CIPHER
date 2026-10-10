@@ -8,7 +8,7 @@
    1. Design tokens
    -------------------------------------------------------------------------- */
 :root {
-  /* Surface */
+  /* Page surface */
   --bg:            #f1f5f9;
   --card:          #ffffff;
   --border:        #e2e8f0;
@@ -19,13 +19,17 @@
   --text-muted:    #475569;
   --text-subtle:   #64748b;
 
-  /* Brand */
+  /* Brand / primary */
   --primary:       #2563eb;
   --primary-hover: #1d4ed8;
   --primary-tint:  #dbeafe;
   --primary-text:  #1d4ed8;
 
-  /* Semantic */
+  /* Header gradient — change these two to retheme the banner */
+  --header-start:  #1e3a8a;
+  --header-end:    #4f46e5;
+
+  /* Semantic colours */
   --success-text:   #166534;
   --success-bg:     #f0fdf4;
   --success-border: #86efac;
@@ -33,12 +37,12 @@
   --error-bg:       #fef2f2;
   --error-border:   #fca5a5;
 
-  /* Input */
+  /* Inputs */
   --input-border:  #94a3b8;
   --input-focus:   var(--primary);
 
   /* Typography */
-  --font: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
 
   /* Spacing scale */
@@ -54,33 +58,206 @@
 }
 
 /* --------------------------------------------------------------------------
-   2. Reset & base
+   2. Global reset & base
    -------------------------------------------------------------------------- */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
+/* body margin: 0 lets the header go edge-to-edge */
 body {
+  margin: 0;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: 0.9375rem;   /* 15px */
+  font-size: 0.9375rem;  /* 15 px */
   line-height: 1.6;
-  padding: var(--s4) var(--s4) 0;
   min-width: 320px;
+  overflow-x: hidden;
 }
 
 /* --------------------------------------------------------------------------
-   3. Container
+   3. PAGE HEADER — compact horizontal layout
+      Full-width gradient. Inner content aligned with the cards below.
+   -------------------------------------------------------------------------- */
+
+/* Fade-in for decorative letter line */
+@keyframes header-fade-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header__letters { animation: none !important; }
+}
+
+.site-header {
+  width: 100%;            /* never 100vw — avoids scrollbar gap */
+  background: linear-gradient(135deg, var(--header-start) 0%, var(--header-end) 100%);
+  box-shadow: 0 6px 18px rgba(30, 58, 138, 0.25);
+  border-radius: 0 0 16px 16px;
+  color: #fff;
+  padding: 1.25rem 1rem;  /* ~130–160px total height on desktop */
+}
+
+/* Inner wrapper — same max-width as the container below */
+.site-header__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* LEFT group: icon circle + stacked text */
+.site-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+/* Icon circle */
+.site-header__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.site-header__icon {
+  width: 22px;
+  height: 22px;
+  stroke: #fff;
+  fill: none;
+}
+
+/* Stacked title + subtitle */
+.site-header__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.site-header__title {
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.15;
+  color: #fff;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.site-header__subtitle {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* RIGHT group: badge + decorative letters — pushed to far right */
+.site-header__right {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Pill badge */
+.site-header__badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+/* Decorative letter line */
+.site-header__letters {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.80);
+  white-space: nowrap;
+  animation: header-fade-in 0.8s ease both;
+}
+
+/* --------------------------------------------------------------------------
+   HEADER — Tablet (600px – 900px): same row, hide decorative letters
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .site-header { padding: 1rem 1rem; }
+  .site-header__title   { font-size: 1.7rem; }
+  .site-header__letters { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   HEADER — Mobile (< 600px): stack vertically, centered
+   -------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+  .site-header {
+    padding: 1rem 1rem;
+    border-radius: 0 0 12px 12px;
+  }
+
+  .site-header__inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    padding: 0 16px;
+  }
+
+  .site-header__brand {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .site-header__icon-wrap { width: 36px; height: 36px; }
+  .site-header__icon      { width: 18px; height: 18px; }
+
+  .site-header__text { align-items: center; }
+
+  .site-header__title    { font-size: 1.5rem; }
+  .site-header__subtitle { font-size: 0.85rem; }
+
+  .site-header__right {
+    align-items: center;
+    margin-left: 0;
+  }
+
+  .site-header__badge  { font-size: 0.75rem; }
+  .site-header__letters { display: none; }
+}
+
+/* --------------------------------------------------------------------------
+   4. Page container (below the header)
    -------------------------------------------------------------------------- */
 .container {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 1.5rem var(--s4) 0;   /* 1.5rem top brings tool closer to header */
   display: flex;
   flex-direction: column;
-  gap: var(--s4);
+  gap: 1.5rem;
 }
 
 /* --------------------------------------------------------------------------
-   4. Card base
+   5. Card base
    -------------------------------------------------------------------------- */
 .card {
   background: var(--card);
@@ -90,98 +267,13 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   5. Header — neutral, compact
-   -------------------------------------------------------------------------- */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--s3);
-  padding: var(--s2) var(--s4);          /* ~56–64px tall */
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  box-shadow: var(--shadow);
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: var(--s2);
-}
-
-/* Lock icon tile */
-.header-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  border-radius: var(--r);
-  overflow: hidden;       /* clips the SVG's rounded corners cleanly */
-  background: transparent;
-}
-
-.header-logo {
-  width: 44px;
-  height: 44px;
-  display: block;
-  border-radius: var(--r);
-}
-
-.header-titles h1 {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--text);
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-
-.header-sub {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  margin-top: 1px;
-}
-
-.header-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 3px;
-}
-
-.header-meta {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  line-height: 1.4;
-}
-
-.header-meta strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-.header-badge {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--primary-text);
-  background: var(--primary-tint);
-  border: 1px solid #bfdbfe;
-  padding: 2px 10px;
-  border-radius: 999px;
-}
-
-/* --------------------------------------------------------------------------
    6. Two-column main row
    -------------------------------------------------------------------------- */
 .two-col {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--s4);
-  align-items: stretch;   /* equal height */
+  align-items: stretch;
 }
 
 /* --------------------------------------------------------------------------
@@ -209,13 +301,10 @@ body {
 /* --------------------------------------------------------------------------
    8. Cipher Tool card
    -------------------------------------------------------------------------- */
-.tool-card {
-  padding: var(--s4);
-}
+.tool-card  { padding: var(--s4); }
+.info-card  { padding: var(--s4); }
 
-.form-group {
-  margin-bottom: var(--s3);
-}
+.form-group { margin-bottom: var(--s3); }
 
 .form-group label {
   display: block;
@@ -231,7 +320,7 @@ body {
   color: var(--text-muted);
 }
 
-/* Inputs */
+/* Inputs — 16px font prevents iOS zoom on focus */
 input[type="text"],
 input[type="number"] {
   width: 100%;
@@ -239,10 +328,11 @@ input[type="number"] {
   background: #fff;
   border: 1px solid var(--input-border);
   border-radius: var(--r);
-  font-size: 0.9375rem;
+  font-size: 1rem;          /* ≥ 16px stops iOS auto-zoom */
   font-family: var(--mono);
   color: var(--text);
   transition: border-color .15s, box-shadow .15s;
+  overflow-wrap: anywhere;
 }
 
 input[type="text"]:focus,
@@ -252,7 +342,7 @@ input[type="number"]:focus {
   box-shadow: 0 0 0 2px rgba(37, 99, 235, .15);
 }
 
-/* Hide number spinners */
+/* Remove number spinners */
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
 input[type="number"] { -moz-appearance: textfield; }
@@ -268,6 +358,7 @@ input[readonly] {
   font-size: 0.8rem;
   color: var(--text-muted);
   margin-top: 5px;
+  overflow-wrap: anywhere;
 }
 
 .field-error {
@@ -281,8 +372,8 @@ input[readonly] {
   border-radius: var(--r-sm);
   padding: 6px 10px;
   margin-top: 6px;
+  overflow-wrap: anywhere;
 }
-
 .field-error::before { content: '⚠ '; flex-shrink: 0; }
 .field-error.hidden  { display: none; }
 
@@ -298,7 +389,6 @@ input[readonly] {
   cursor: pointer;
   user-select: none;
 }
-
 .auto-upper-label input[type="checkbox"] {
   width: 14px;
   height: 14px;
@@ -306,7 +396,9 @@ input[readonly] {
   accent-color: var(--primary);
 }
 
-/* Buttons */
+/* --------------------------------------------------------------------------
+   9. Buttons
+   -------------------------------------------------------------------------- */
 .button-group {
   display: flex;
   gap: var(--s1);
@@ -320,13 +412,15 @@ input[readonly] {
   justify-content: center;
   gap: 6px;
   padding: 9px 18px;
+  min-height: 44px;         /* minimum tap target */
   font-size: 0.875rem;
   font-family: var(--font);
   font-weight: 600;
   border-radius: var(--r);
   border: 1.5px solid transparent;
   cursor: pointer;
-  transition: background .12s, border-color .12s, color .12s, box-shadow .12s, transform .07s;
+  transition: background .12s, border-color .12s, color .12s,
+              box-shadow .12s, transform .07s;
   white-space: nowrap;
   min-width: 100px;
 }
@@ -357,9 +451,7 @@ input[readonly] {
   border-color: var(--primary);
   color: var(--primary);
 }
-.btn-outline:hover {
-  background: var(--primary-tint);
-}
+.btn-outline:hover { background: var(--primary-tint); }
 
 /* Ghost — Clear, Copy, Swap */
 .btn-ghost {
@@ -373,7 +465,7 @@ input[readonly] {
   color: var(--text);
 }
 
-/* Small variant for Copy / Swap */
+/* Small ghost buttons (Copy / Swap) */
 .btn-sm {
   padding: 9px 12px;
   font-size: 0.8125rem;
@@ -386,14 +478,13 @@ input[readonly] {
   background: var(--success-bg);
 }
 
-/* Disabled state */
 .btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
   pointer-events: none;
 }
 
-/* Test button */
+/* Test runner button */
 .btn-test {
   background: #4338ca;
   border-color: #4338ca;
@@ -402,30 +493,36 @@ input[readonly] {
 }
 .btn-test:hover { background: #3730a3; border-color: #3730a3; }
 
-/* Result row */
+/* --------------------------------------------------------------------------
+   10. Result row
+   -------------------------------------------------------------------------- */
 .result-row {
   display: flex;
   gap: var(--s1);
   align-items: stretch;
 }
+.result-row .result-input {
+  flex: 1;
+  min-width: 0;         /* lets flex child shrink below its content size */
+  overflow-wrap: anywhere;
+}
 
-.result-row .result-input { flex: 1; }
-
-/* Status area */
+/* --------------------------------------------------------------------------
+   11. Status area & round-trip
+   -------------------------------------------------------------------------- */
 .status-area {
   font-size: 0.875rem;
   border-radius: var(--r);
   white-space: pre-line;
+  overflow-wrap: anywhere;
   min-height: 0;
 }
-
 .status-area.error {
   padding: 10px var(--s2);
   color: var(--error-text);
   background: var(--error-bg);
   border: 1px solid var(--error-border);
 }
-
 .status-area.success {
   padding: 10px var(--s2);
   color: var(--success-text);
@@ -433,23 +530,17 @@ input[readonly] {
   border: 1px solid var(--success-border);
 }
 
-/* Round-trip check */
 .round-trip-check {
   margin-top: var(--s1);
   font-size: 0.8125rem;
   font-weight: 600;
 }
-
 .round-trip-check.pass { color: var(--success-text); }
 .round-trip-check.fail { color: var(--error-text); }
 
 /* --------------------------------------------------------------------------
-   9. How It Works card
+   12. How It Works card
    -------------------------------------------------------------------------- */
-.info-card {
-  padding: var(--s4);
-}
-
 .info-text {
   font-size: 0.875rem;
   color: var(--text);
@@ -467,6 +558,7 @@ input[readonly] {
   display: flex;
   flex-direction: column;
   gap: var(--s1);
+  overflow-wrap: anywhere;
 }
 
 .formula-line {
@@ -493,6 +585,8 @@ input[readonly] {
   background: rgba(255,255,255,.7);
   padding: 2px 8px;
   border-radius: var(--r-sm);
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 /* Worked example */
@@ -518,6 +612,7 @@ input[readonly] {
   align-items: center;
   gap: var(--s2);
   margin-bottom: 5px;
+  flex-wrap: wrap;
 }
 
 .example-tag {
@@ -528,6 +623,7 @@ input[readonly] {
   min-width: 48px;
   text-align: center;
   letter-spacing: .03em;
+  flex-shrink: 0;
 }
 
 .plain-tag  { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
@@ -540,6 +636,7 @@ input[readonly] {
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--text);
+  overflow-wrap: anywhere;
 }
 
 .example-result {
@@ -547,7 +644,6 @@ input[readonly] {
   font-size: 0.8125rem;
   color: var(--text-muted);
 }
-
 .example-result strong {
   font-family: var(--mono);
   color: #059669;
@@ -570,7 +666,7 @@ input[readonly] {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  overflow-x: auto;
+  overflow-x: auto;          /* scrolls sideways if viewport is too narrow */
   padding-bottom: 2px;
 }
 
@@ -615,12 +711,14 @@ input[readonly] {
   display: flex;
   align-items: center;
   gap: 6px;
+  padding: var(--s1) 0;      /* extra tap area */
 }
 
 .report-notes summary::before {
   content: '▸';
   font-size: 0.65rem;
   transition: transform .15s;
+  flex-shrink: 0;
 }
 
 details[open] > summary::before { transform: rotate(90deg); }
@@ -649,6 +747,7 @@ details[open] > summary::before { transform: rotate(90deg); }
   font-size: 0.8rem;
   color: var(--text-muted);
   line-height: 1.55;
+  overflow-wrap: anywhere;
 }
 
 .note-item code {
@@ -660,11 +759,9 @@ details[open] > summary::before { transform: rotate(90deg); }
 }
 
 /* --------------------------------------------------------------------------
-   10. Alphabet shift strip — FULL WIDTH, below main row
+   13. Alphabet shift strip (full-width card)
    -------------------------------------------------------------------------- */
-.shift-strip {
-  padding: var(--s3) var(--s4);
-}
+.shift-strip { padding: var(--s3) var(--s4); }
 
 .shift-strip-label {
   font-size: 0.8rem;
@@ -681,14 +778,13 @@ details[open] > summary::before { transform: rotate(90deg); }
   gap: 4px;
 }
 
-/* Each row stretches all 26 cells across the full card width */
 .shift-row {
   display: flex;
   gap: 4px;
 }
 
 .shift-cell {
-  flex: 1;             /* stretch to fill width equally */
+  flex: 1;
   min-width: 0;
   text-align: center;
   font-family: var(--mono);
@@ -704,7 +800,6 @@ details[open] > summary::before { transform: rotate(90deg); }
   border: 1px solid var(--border);
 }
 
-/* Ciphertext row uses primary tint */
 .shift-cipher .shift-cell {
   background: var(--primary-tint);
   color: var(--primary-text);
@@ -715,14 +810,13 @@ details[open] > summary::before { transform: rotate(90deg); }
   font-size: 0.75rem;
   color: var(--text-subtle);
   margin-top: var(--s1);
+  overflow-wrap: anywhere;
 }
 
 /* --------------------------------------------------------------------------
-   11. Test suite
+   14. Test suite
    -------------------------------------------------------------------------- */
-.test-suite-section {
-  padding: var(--s4);
-}
+.test-suite-section { padding: var(--s4); }
 
 .test-suite-header {
   display: flex;
@@ -744,11 +838,11 @@ details[open] > summary::before { transform: rotate(90deg); }
   font-weight: 700;
   margin-bottom: var(--s2);
 }
-
 .test-summary.pass { color: var(--success-text); }
 .test-summary.fail { color: var(--error-text); }
 
-.table-container { overflow-x: auto; }
+/* Table scrolls horizontally on narrow screens */
+.table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 .test-table {
   width: 100%;
@@ -778,12 +872,16 @@ details[open] > summary::before { transform: rotate(90deg); }
   color: var(--text-subtle);
 }
 
+/* Input, Expected and Actual columns can wrap long values */
 .test-table td:nth-child(3),
-.test-table td:nth-child(4),
 .test-table td:nth-child(5),
 .test-table td:nth-child(6) {
   font-family: var(--mono);
-  word-break: break-all;
+  word-break: break-word;
+}
+
+.test-table td:nth-child(4) {
+  font-family: var(--mono);
 }
 
 .result-pass {
@@ -805,7 +903,7 @@ details[open] > summary::before { transform: rotate(90deg); }
 }
 
 /* --------------------------------------------------------------------------
-   12. Footer
+   15. Footer
    -------------------------------------------------------------------------- */
 .footer {
   display: flex;
@@ -823,48 +921,60 @@ details[open] > summary::before { transform: rotate(90deg); }
 .footer-sep  { color: var(--border); }
 
 /* --------------------------------------------------------------------------
-   13. Responsive
+   16. RESPONSIVE — page body (below the header)
    -------------------------------------------------------------------------- */
 
-/* ≤ 900px — collapse to single column, tool first (it's first in DOM) */
+/* ── Collapse two-col to single column below 900px ── */
 @media (max-width: 900px) {
   .two-col {
     grid-template-columns: 1fr;
   }
 }
 
-/* ≤ 640px — tighter spacing */
-@media (max-width: 640px) {
-  body { padding: var(--s3) var(--s2) 0; }
-
-  .container { gap: var(--s3); }
-
-  .header {
-    padding: var(--s2) var(--s3);
-    flex-direction: column;
-    align-items: flex-start;
+/* ── Tighten container padding below 600px ── */
+@media (max-width: 600px) {
+  .container {
+    padding: var(--s3) var(--s3) 0;
+    gap: var(--s3);
   }
 
-  .header-right { align-items: flex-start; }
-
+  /* Cards */
   .tool-card,
   .info-card,
   .test-suite-section,
-  .shift-strip { padding: var(--s3); }
+  .shift-strip {
+    padding: var(--s3);
+  }
 
-  .button-group { flex-direction: column; }
-  .btn          { width: 100%; }
+  /* Full-width buttons; stack vertically with 8px gap */
+  .button-group {
+    flex-direction: column;
+    gap: var(--s1);
+  }
+  .btn {
+    width: 100%;
+    min-height: 44px;
+  }
 
+  /* Result row stacks vertically */
   .result-row   { flex-direction: column; }
-  .btn-sm       { width: 100%; }
+  .btn-sm       { width: 100%; min-height: 44px; }
 
-  .test-suite-header { flex-direction: column; align-items: flex-start; }
+  /* Test suite header stacks */
+  .test-suite-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .btn-test { width: 100%; }
 
-  /* Alphabet strip — fixed min size so letters don't vanish */
+  /* Shift strip — keep letters readable */
   .shift-cell { font-size: 0.65rem; padding: 4px 0; }
 }
 
-/* ≤ 375px — prevent letter-table overflow */
-@media (max-width: 375px) {
+/* ── Extra-narrow phones ── */
+@media (max-width: 380px) {
+  .container { padding: var(--s2) var(--s2) 0; }
+
+  /* Letter-table: slightly smaller cells */
   .lt-cell { flex: 0 0 22px; font-size: 0.6rem; }
 }

@@ -2,37 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caesar Cipher &mdash; Assignment 1 | University of Balochistan</title>
+  <!-- Viewport: required for responsive behaviour on mobile devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Caesar Cipher</title>
   <meta name="description" content="Caesar Cipher tool — Information Security Programming Assignment 1, University of Balochistan. Developed by Muhammad Ayan.">
-  <!-- Favicon — shows in browser tab -->
+  <!-- Favicon — appears in the browser tab -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
 
-    <!-- ===== HEADER ===== -->
-    <header class="header">
-      <div class="header-left">
-        <div class="header-icon" aria-hidden="true">
-          <img src="/favicon.svg" alt="" width="28" height="28" class="header-logo">
+  <!-- =====================================================================
+       PAGE HEADER — compact horizontal layout (~130–160px desktop height)
+       Full-width gradient banner. Inner content aligned with cards below.
+       ===================================================================== -->
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+
+      <!-- LEFT: icon + stacked title/subtitle -->
+      <div class="site-header__brand">
+        <div class="site-header__icon-wrap" aria-hidden="true">
+          <svg class="site-header__icon" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round"
+               aria-hidden="true" focusable="false">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
         </div>
-        <div class="header-titles">
-          <h1>Caesar Cipher</h1>
-          <p class="header-sub">Classic substitution cipher &mdash; modular arithmetic</p>
+        <div class="site-header__text">
+          <h1 class="site-header__title">Caesar Cipher</h1>
+          <p class="site-header__subtitle">Information Security &mdash; Assignment 1</p>
         </div>
       </div>
-      <div class="header-right">
-        <p class="header-meta">University of Balochistan</p>
-        <p class="header-meta">Developed by <strong>Muhammad Ayan</strong></p>
-        <span class="header-badge">Assignment 1 &mdash; Information Security</span>
+
+      <!-- RIGHT: badge + decorative letter line -->
+      <div class="site-header__right">
+        <span class="site-header__badge">Classical Substitution Cipher</span>
+        <p class="site-header__letters" aria-hidden="true">Department of Computer Science
+University of Balochistan, Quetta</p>
       </div>
-    </header>
+
+    </div>
+  </header>
+  <!-- /PAGE HEADER -->
+
+  <div class="container">
 
     <!-- ===== MAIN ROW: Cipher Tool + How It Works ===== -->
     <div class="two-col">
@@ -205,6 +220,7 @@
         </button>
       </div>
       <div id="test-summary" class="test-summary" aria-live="polite"></div>
+      <!-- overflow-x wrapper keeps table from breaking layout on narrow screens -->
       <div class="table-container">
         <table id="test-table" class="test-table">
           <thead>
@@ -225,11 +241,11 @@
 
     <!-- ===== FOOTER ===== -->
     <footer class="footer">
-      <span class="footer-name">Muhammad Ayan</span>
+      <span class="footer-name">Developer : Muhammad Ayan</span>
       <span class="footer-sep" aria-hidden="true">&bull;</span>
       <span>University of Balochistan</span>
       <span class="footer-sep" aria-hidden="true">&bull;</span>
-      <span>Information Security Programming &mdash; Assignment 1</span>
+      <span>Instructor : Dr. Ihsan Ullah</span>
     </footer>
 
   </div><!-- /.container -->
